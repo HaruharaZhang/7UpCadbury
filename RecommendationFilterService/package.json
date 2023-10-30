@@ -1,0 +1,15 @@
+{
+  "name": "7upcadbury",
+  "version": "1.0.0",
+  "description": "coursework by 7upcadbury team",
+  "main": "recommendationFilterService.js",
+  "scripts": {
+    "start": "node recommendationFilterService.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jackie",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
