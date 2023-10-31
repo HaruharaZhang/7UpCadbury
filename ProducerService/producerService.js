@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const port = 3000;
-const serviceName = "Viewing History Service";
+const serviceName = "Producer Service";
 
 // Add static file service
 app.use('/static', express.static('public'));

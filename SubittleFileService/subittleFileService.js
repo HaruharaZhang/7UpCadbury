@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const port = 3000;
-const serviceName = "Media Manager Service";
+const serviceName = "Subittle File Service";
 
 // Add static file service
 app.use('/static', express.static('public'));

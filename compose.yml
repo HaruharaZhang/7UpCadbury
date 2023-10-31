@@ -1,0 +1,330 @@
+version: '3'
+services:
+
+  #Database 
+  media-service-mysql-db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: qweabcabc
+    volumes:
+      - ./data/media-service-mysql-db:/usr/src/app/data
+  
+  media-file-service-mysql-db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: qweabcabc
+    volumes:
+      - ./data/media-file-service-mysql-db:/usr/src/app/data
+
+  viewer-service-mysql-db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: qweabcabc
+    volumes:
+      - ./data/viewer-service-mysql-db:/usr/src/app/data
+  
+  account-service-mysql-db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: qweabcabc
+    volumes:
+      - ./data/account-service-mysql-db:/usr/src/app/data
+
+  streaming-history-service-mysql-db:
+    image: cassandra:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: qweabcabc
+    volumes:
+      - ./data/streaming-history-service-mysql-db:/usr/src/app/data
+
+  preference-service-mysql-db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: qweabcabc
+    volumes:
+      - ./data/preference-service-mysql-db:/usr/src/app/data
+  
+  rating-history-service-mysql-db:
+    image: cassandra:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: qweabcabc
+    volumes:
+      - ./data/rating-history-service-mysql-db:/usr/src/app/data
+  
+  streaming-pack-service-mysql-db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: qweabcabc
+    volumes:
+      - ./data/streaming-pack-service-mysql-db:/usr/src/app/data
+
+  subittle-file-service-mysql-db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: qweabcabc
+    volumes:
+      - ./data/subittle-file-service-mysql-db:/usr/src/app/data
+
+  producer-service-mysql-db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: qweabcabc
+    volumes:
+      - ./data/producer-service-mysql-db:/usr/src/app/data
+
+  producing-pack-service-mysql-db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: qweabcabc
+    volumes:
+      - ./data/producing-pack-service-mysql-db:/usr/src/app/data
+
+  media-statistic-service-mysql-db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: qweabcabc
+    volumes:
+      - ./data/media-statistic-service-mysql-db:/usr/src/app/data
+
+  #Authorization Service
+  authorization-service:
+    image: 7upcadbury/authorizationservice
+    build: ./AuthorizationService
+    container_name: authorization-service
+    ports:
+      - "3001:3000"
+    restart: always
+    networks:
+      - backend-network
+      - frontend-network
+  
+
+  #Viewing Manager
+  viewing-manager-service:
+    image: 7upcadbury/viewingmanagerservice
+    build: ./ViewingManagerService
+    depends_on:
+      - authorization-service
+    container_name: viewing-manager-service
+    ports:
+      - "4001:3000"
+    restart: always
+    networks:
+      - backend-network
+      - frontend-network
+
+  #Rating Manager
+  rating-manager-service:
+    image: 7upcadbury/ratingmanager
+    build: ./RatingManager
+    depends_on:
+      - authorization-service
+    container_name: rating-manager-service
+    ports:
+      - "5001:3000"
+    restart: always
+    networks:
+      - backend-network
+      - frontend-network
+
+  #Producer Manager
+  producer-manager-service:
+    image: 7upcadbury/producermanager
+    build: ./ProducerManager
+    depends_on:
+      - authorization-service
+    container_name: producer-manager-service
+    ports:
+      - "6001:3000"
+    restart: always
+    networks:
+      - backend-network
+      - frontend-network
+
+  #Media Manager
+  media-manager-service:
+    image: 7upcadbury/mediamanager
+    build: ./MediaManager
+    depends_on:
+      - authorization-service
+    container_name: media-manager-service
+    ports:
+      - "7001:3000"
+    restart: always
+    networks:
+      - backend-network
+      - frontend-network
+  
+  #Services
+  media-service:
+    image: 7upcadbury/mediaservice
+    build: ./MediaService
+    depends_on:
+      - viewing-manager-service
+      - media-service-mysql-db
+      - rating-manager-service
+      - media-manager-service
+    container_name: media-service
+    ports:
+      - "4002:3000"
+    restart: always
+    networks:
+      - backend-network
+
+  media-file-service:
+    image: 7upcadbury/mediafileservice
+    build: ./MediaFileService
+    depends_on:
+      - viewing-manager-service
+      - media-file-service-mysql-db
+      - producer-manager-service
+      - media-manager-service
+    container_name: media-file-service
+    ports:
+      - "4003:3000"
+    restart: always
+    networks:
+      - backend-network
+  
+  viewer-service:
+    image: 7upcadbury/viewerservice
+    build: ./ViewerService
+    depends_on:
+      - viewing-manager-service
+      - viewer-service-mysql-db
+    container_name: viewer-service
+    ports:
+      - "4004:3000"
+    restart: always
+    networks:
+      - backend-network
+  
+  account-service:
+    image: 7upcadbury/accountservice
+    build: ./AccountService
+    depends_on:
+      - viewing-manager-service
+      - account-service-mysql-db
+      - rating-manager-service
+      - producer-manager-service
+      - media-manager-service
+    container_name: account-service
+    ports:
+      - "4005:3000"
+    restart: always
+    networks:
+      - backend-network
+
+  streaming-history-service:
+    image: 7upcadbury/streaminghistoryservice
+    build: ./StreamingHIstoryService
+    depends_on:
+      - viewing-manager-service
+      - streaming-history-service-mysql-db
+    container_name: streaming-history-service
+    ports:
+      - "4006:3000"
+    restart: always
+    networks:
+      - backend-network
+  
+  preference-service:
+    image: 7upcadbury/preferenceservice
+    build: ./PreferenceService
+    depends_on:
+      - viewing-manager-service
+      - preference-service-mysql-db
+    container_name: preference-service
+    ports:
+      - "4007:3000"
+    restart: always
+    networks:
+      - backend-network
+
+  rating-history-service:
+    image: 7upcadbury/ratinghistoryservice
+    build: ./RatingHistoryService
+    depends_on:
+      - rating-manager-service
+      - rating-history-service-mysql-db
+    container_name: rating-history-service
+    ports:
+      - "5002:3000"
+    restart: always
+    networks:
+      - backend-network
+  
+  # streaming-pack-service:
+  #   image: 7upcadbury/streamingpackservice
+  #   build: ./StreamingPackService
+  #   depends_on:
+  #     - rating-manager-service
+  #     - streaming-pack-service-mysql-db
+  #   container_name: streaming-pack-service
+  #   ports:
+  #     - "5003:3000"
+  #   restart: always
+  #   networks:
+  #     - backend-network
+
+  subittle-file-service:
+    image: 7upcadbury/subittlefileservice
+    build: ./SubittleFileService
+    depends_on:
+      - producer-manager-service
+      - subittle-file-service-mysql-db
+      - media-manager-service
+    container_name: subittle-file-service
+    ports:
+      - "6002:3000"
+    restart: always
+    networks:
+      - backend-network
+
+  producer-service:
+    image: 7upcadbury/producerservice
+    build: ./ProducerService
+    depends_on:
+      - producer-manager-service
+      - producer-service-mysql-db
+    container_name: producer-service
+    ports:
+      - "6003:3000"
+    restart: always
+    networks:
+      - backend-network
+  
+  producing-pack-service:
+    image: 7upcadbury/producingpackservice
+    build: ./ProducingPackService
+    depends_on:
+      - producer-manager-service
+      - producing-pack-service-mysql-db
+    container_name: producing-pack-service
+    ports:
+      - "6004:3000"
+    restart: always
+    networks:
+      - backend-network
+  
+  media-statistic-service:
+    image: 7upcadbury/mediastatisticservice
+    build: ./MediaStatisticService
+    depends_on:
+      - producer-manager-service
+      - media-statistic-service-mysql-db
+      - media-manager-service
+    container_name: media-statistic-service
+    ports:
+      - "6005:3000"
+    restart: always
+    networks:
+      - backend-network
+
+#TODO: 从这里开始Recommending内容，服务需要重新创建
+
+networks:
+  backend-network:
+    driver: bridge
+  frontend-network:
+    driver: bridge

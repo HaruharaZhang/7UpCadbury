@@ -6,11 +6,10 @@ cd ..
 cd AuthorizationService
 docker image build -t 7upcadbury/authorizationservice .
 docker push 7upcadbury/authorizationservice
-cd ..
-cd Media
-cd MediaManagerService
-docker image build -t 7upcadbury/mediamanagerservice .
-docker push 7upcadbury/mediamanagerservice
+cd .. 
+cd MediaFileService
+docker image build -t 7upcadbury/mediafileservice .
+docker push 7upcadbury/mediafileservice  
 cd ..
 cd MediaService
 docker image build -t 7upcadbury/mediaservice .
@@ -59,3 +58,51 @@ cd ..
 cd SubscriptionService
 docker image build -t 7upcadbury/subscriptionservice .
 docker push 7upcadbury/subscriptionservice
+cd ..
+cd ViewerService
+docker image build -t 7upcadbury/viewerservice .
+docker push 7upcadbury/viewerservice
+cd ..
+cd StreamingHIstoryService
+docker image build -t 7upcadbury/streaminghistoryservice .
+docker push 7upcadbury/streaminghistoryservice
+cd ..
+cd PreferenceService
+docker image build -t 7upcadbury/preferenceservice .
+docker push 7upcadbury/preferenceservice
+cd ..
+cd StreamingPackService
+docker image build -t 7upcadbury/streamingpackservice .
+docker push 7upcadbury/streamingpackservice
+cd ..
+cd SubittleFileService
+docker image build -t 7upcadbury/subittlefileservice .
+docker push 7upcadbury/subittlefileservice
+cd ..
+cd ProducerService
+docker image build -t 7upcadbury/producerservice .
+docker push 7upcadbury/producerservice
+cd ..
+cd ProducingPackService
+docker image build -t 7upcadbury/producingpackservice .
+docker push 7upcadbury/producingpackservice
+cd ..
+cd MediaStatisticService
+docker image build -t 7upcadbury/mediastatisticservice .
+docker push 7upcadbury/mediastatisticservice
+cd ..
+cd ViewingManagerService
+docker image build -t 7upcadbury/viewingmanagerservice .
+docker push 7upcadbury/viewingmanagerservice
+cd ..
+cd RatingManager
+docker image build -t 7upcadbury/ratingmanager .
+docker push 7upcadbury/ratingmanager
+cd ..
+cd ProducerManager
+docker image build -t 7upcadbury/producermanager .
+docker push 7upcadbury/producermanager
+cd ..
+cd MediaManager
+docker image build -t 7upcadbury/mediamanager .
+docker push 7upcadbury/mediamanager

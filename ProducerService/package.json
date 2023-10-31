@@ -2,9 +2,9 @@
   "name": "7upcadbury",
   "version": "1.0.0",
   "description": "coursework by 7upcadbury team",
-  "main": "mediaManagerService.js",
+  "main": "producerService.js",
   "scripts": {
-    "start": "node mediaManagerService.js",
+    "start": "node producerService.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jackie",

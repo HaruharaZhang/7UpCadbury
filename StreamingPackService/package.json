@@ -2,9 +2,9 @@
   "name": "7upcadbury",
   "version": "1.0.0",
   "description": "coursework by 7upcadbury team",
-  "main": "viewingHistoryService.js",
+  "main": "streamingPackService.js",
   "scripts": {
-    "start": "node viewingHistoryService.js",
+    "start": "node streamingPackService.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jackie",
