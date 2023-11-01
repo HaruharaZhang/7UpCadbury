@@ -85,14 +85,87 @@ services:
       MYSQL_ROOT_PASSWORD: qweabcabc
     volumes:
       - ./data/media-statistic-service-mysql-db:/usr/src/app/data
+  
+  recommending-service-mysql-db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: qweabcabc
+    volumes:
+      - ./data/recommending-service-mysql-db:/usr/src/app/data
+  
+  dataset-service-mysql-db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: qweabcabc
+    volumes:
+      - ./data/dataset-service-mysql-db:/usr/src/app/data
+  
+  model-service-mysql-db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: qweabcabc
+    volumes:
+      - ./data/model-service-mysql-db:/usr/src/app/data
+  
+  subscribing-service-mysql-db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: qweabcabc
+    volumes:
+      - ./data/subscribing-service-mysql-db:/usr/src/app/data
+  
+  profit-withdraws-service-mysql-db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: qweabcabc
+    volumes:
+      - ./data/profit-withdraws-service-mysql-db:/usr/src/app/data
+  
+  payment-method-service-mysql-db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: qweabcabc
+    volumes:
+      - ./data/payment-method-service-mysql-db:/usr/src/app/data
+
+  #Nginx
+  authorization-nginx:
+    image: nginx:latest
+    container_name: authorization-nginx
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - authorization-service
+    networks:
+      - backend-network
+      - frontend-network
+    
+  media-nginx:
+    image: nginx:latest
+    container_name: media-nginx
+    ports:
+      - "4002:4002"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - media-service
+    networks:
+      - backend-network
 
   #Authorization Service
+  #Assign 10 replicas
   authorization-service:
     image: 7upcadbury/authorizationservice
     build: ./AuthorizationService
-    container_name: authorization-service
-    ports:
-      - "3001:3000"
+    deploy:
+      replicas: 10
+    #container_name: authorization-service
+    #ports:
+    #  - "3001:3000"
+    expose:
+      - "3000"
     restart: always
     networks:
       - backend-network
@@ -155,18 +228,52 @@ services:
       - backend-network
       - frontend-network
   
+  #Recommending Manager
+  recommending-manager-service:
+    image: 7upcadbury/recommendingmanagerservice
+    build: ./cd RecommendingManagerService
+    depends_on:
+      - authorization-service
+    container_name: recommending-manager-service
+    ports:
+      - "8001:3000"
+    restart: always
+    networks:
+      - backend-network
+      - frontend-network
+  
+  #Payment Manager
+  payment-manager-service:
+    image: 7upcadbury/paymentmanager
+    build: ./PaymentManager
+    depends_on:
+      - authorization-service
+    container_name: payment-manager-service
+    ports:
+      - "9001:3000"
+    restart: always
+    networks:
+      - backend-network
+      - frontend-network
+
   #Services
+  #Assign 10 replicas
   media-service:
     image: 7upcadbury/mediaservice
     build: ./MediaService
+    deploy:
+      replicas: 10
     depends_on:
       - viewing-manager-service
       - media-service-mysql-db
       - rating-manager-service
       - media-manager-service
-    container_name: media-service
-    ports:
-      - "4002:3000"
+      - recommending-manager-service
+    #container_name: media-service
+    #ports:
+    #  - "4002:3000"
+    expose:
+      - "3000"
     restart: always
     networks:
       - backend-network
@@ -192,6 +299,7 @@ services:
     depends_on:
       - viewing-manager-service
       - viewer-service-mysql-db
+      - recommending-manager-service
     container_name: viewer-service
     ports:
       - "4004:3000"
@@ -221,6 +329,7 @@ services:
     depends_on:
       - viewing-manager-service
       - streaming-history-service-mysql-db
+      - recommending-manager-service
     container_name: streaming-history-service
     ports:
       - "4006:3000"
@@ -247,6 +356,7 @@ services:
     depends_on:
       - rating-manager-service
       - rating-history-service-mysql-db
+      - recommending-manager-service
     container_name: rating-history-service
     ports:
       - "5002:3000"
@@ -320,8 +430,84 @@ services:
     restart: always
     networks:
       - backend-network
+  
+  recommending-service:
+    image: 7upcadbury/recommendingservice
+    build: ./RecommendingService
+    depends_on:
+      - recommending-manager-service
+      - recommending-service-mysql-db
+    container_name: recommending-service
+    ports:
+      - "8002:3000"
+    restart: always
+    networks:
+      - backend-network
 
-#TODO: 从这里开始Recommending内容，服务需要重新创建
+  dataset-service:
+    image: 7upcadbury/recommendingservice
+    build: ./DatasetService
+    depends_on:
+      - recommending-manager-service
+      - dataset-service-mysql-db
+    container_name: dataset-service
+    ports:
+      - "8003:3000"
+    restart: always
+    networks:
+      - backend-network
+  
+  model-service:
+    image: 7upcadbury/modelservice
+    build: ./ModelService
+    depends_on:
+      - recommending-manager-service
+      - model-service-mysql-db
+    container_name: model-service
+    ports:
+      - "8004:3000"
+    restart: always
+    networks:
+      - backend-network
+  
+  subscribing-service:
+    image: 7upcadbury/subscribingservice
+    build: ./SubscribingService
+    depends_on:
+      - payment-manager-service
+      - subscribing-service-mysql-db
+    container_name: subscribing-service
+    ports:
+      - "9002:3000"
+    restart: always
+    networks:
+      - backend-network
+  
+  profit-withdraws-service:
+    image: 7upcadbury/profitwithdrawservice
+    build: ./ProfitWithdrawService
+    depends_on:
+      - payment-manager-service
+      - profit-withdraws-service-mysql-db
+    container_name: profit-withdraws-service
+    ports:
+      - "9003:3000"
+    restart: always
+    networks:
+      - backend-network
+  
+  payment-method-service:
+    image: 7upcadbury/paymentmethodservice
+    build: ./PaymentMethodService
+    depends_on:
+      - payment-manager-service
+      - payment-method-service-mysql-db
+    container_name: payment-method-service
+    ports:
+      - "9004:3000"
+    restart: always
+    networks:
+      - backend-network
 
 networks:
   backend-network:

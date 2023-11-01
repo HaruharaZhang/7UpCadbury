@@ -106,3 +106,35 @@ cd ..
 cd MediaManager
 docker image build -t 7upcadbury/mediamanager .
 docker push 7upcadbury/mediamanager
+cd ..
+cd RecommendingManagerService
+docker image build -t 7upcadbury/recommendingmanagerservice .
+docker push 7upcadbury/recommendingmanagerservice
+cd ..
+cd RecommendingService
+docker image build -t 7upcadbury/recommendingservice .
+docker push 7upcadbury/recommendingservice
+cd ..
+cd DatasetService
+docker image build -t 7upcadbury/datasetservice .
+docker push 7upcadbury/datasetservice
+cd ..
+cd ModelService
+docker image build -t 7upcadbury/modelservice .
+docker push 7upcadbury/modelservice
+cd ..
+cd PaymentManager
+docker image build -t 7upcadbury/paymentmanager .
+docker push 7upcadbury/paymentmanager
+cd ..
+cd SubscribingService
+docker image build -t 7upcadbury/subscribingservice .
+docker push 7upcadbury/subscribingservice
+cd ..
+cd ProfitWithdrawService
+docker image build -t 7upcadbury/profitwithdrawservice .
+docker push 7upcadbury/profitwithdrawservice
+cd ..
+cd PaymentMethodService
+docker image build -t 7upcadbury/paymentmethodservice .
+docker push 7upcadbury/paymentmethodservice
