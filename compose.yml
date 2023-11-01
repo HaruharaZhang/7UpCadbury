@@ -32,8 +32,7 @@ services:
 
   streaming-history-service-mysql-db:
     image: cassandra:latest
-    environment:
-      MYSQL_ROOT_PASSWORD: qweabcabc
+    mem_limit: 1g  
     volumes:
       - ./data/streaming-history-service-mysql-db:/usr/src/app/data
 
@@ -46,8 +45,7 @@ services:
   
   rating-history-service-mysql-db:
     image: cassandra:latest
-    environment:
-      MYSQL_ROOT_PASSWORD: qweabcabc
+    mem_limit: 1g 
     volumes:
       - ./data/rating-history-service-mysql-db:/usr/src/app/data
   
